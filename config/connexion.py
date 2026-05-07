@@ -19,6 +19,6 @@ def connexion():
             print("Connexion réussie !")
     except Exception as e:
         print("Échec de la connexion.", e)
-
-    return connection
-
+        return None
+    
+    return engine
