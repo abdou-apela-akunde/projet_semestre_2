@@ -1,9 +1,10 @@
 from dotenv import load_dotenv
 import os
+from pathlib import Path
 from sqlalchemy import create_engine
 
 def connexion():
-    load_dotenv()
+    load_dotenv(Path(__file__).parent / "config" / ".env")
 
     user = os.getenv("DB_USER")
     password = os.getenv("DB_PASSWORD")
