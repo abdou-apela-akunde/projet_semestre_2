@@ -29,19 +29,28 @@ session.commit()
 print(f"  Regions : {session.query(Region).count()}") 
  
 # ── Départements (récupérer les régions insérées pour les FK) ─── 
-region_map = {r.code: r.id for r in session.query(Region).all()} 
-for rec in get_distinct( 
-    "departement,libelle_departement,region", 
-    "departement,libelle_departement,region" 
-): 
-    code = rec.get("departement") 
-    libelle = rec.get("libelle_departement") 
-    rcode = rec.get("region") 
-    if code and libelle and rcode in region_map: 
-        ajouter_si_absent(session, Departement, code=code, libelle=libelle, 
-                          region_id=region_map[rcode]) 
-session.commit() 
-print(f"  Départements : {session.query(Departement).count()}") 
+region_map = {r.code: r.id for r in session.query(Region).all()}
+
+for rec in get_distinct(
+    "departement,libelle_departement,region",
+    "departement,libelle_departement,region"
+):
+    code = rec.get("departement")
+    libelle = rec.get("libelle_departement")
+    rcode = rec.get("region")
+
+    if code and libelle and rcode in region_map:
+        if not session.query(Departement).filter_by(code=code).first():
+            session.add(
+                Departement(
+                    code=code,
+                    libelle=libelle,
+                    region_id=region_map[rcode]
+                )
+            )
+
+session.commit()
+print(f" Départements : {session.query(Departement).count()}") 
  
 # ── Professions ──────────────────────────────────────────────── 
 for rec in get_distinct("profession_sante", "profession_sante"): 
@@ -60,3 +69,11 @@ print(f"  Tranches d’âge : {session.query(TrancheAge).count()}")
  
 # ── Sexe ──────────────────────────────────────────────────────── 
 # Vérifier le nom du champ avec exploration_api.py (ex: libelle_sexe)
+for rec in get_distinct("libelle_sexe", "libelle_sexe"): 
+    if rec.get("libelle_sexe"): 
+        ajouter_si_absent(session, Sexe, libelle=rec["libelle_sexe"]) 
+session.commit() 
+print(f"  Sexe : {session.query(Sexe).count()}") 
+ 
+session.close() 
+print("=== Terminé ===")
