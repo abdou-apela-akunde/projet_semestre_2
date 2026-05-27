@@ -5,7 +5,8 @@ from models_dimensions import *
 engine = connexion()
 
 if engine:
-    session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
     print("=== Contenu de la base ===") 
     print(f"Régions          : {session.query(Region).count():>4}  (attendu : ~18)") 
