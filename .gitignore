@@ -3,3 +3,4 @@ SAE204-tutoriel#1_alwaysdata_mysql.pdf
 SAE204-tutoriel#2_mysql_python.pdf
 SAE204-tutoriel#3_api_ameli_V2.pdf
 __pycache__/
+config/.env
