@@ -1,8 +1,9 @@
 import requests
-from connexion import engine
+from connexion import connexion
 from sqlalchemy.orm import sessionmaker
 from models_dimensions import Region, Departement, ProfessionSante, TrancheAge, Sexe
 
+engine = connexion()
 session = sessionmaker(bind=engine)() 
  
 BASE = "https://data.ameli.fr/api/explore/v2.1/catalog/datasets" 

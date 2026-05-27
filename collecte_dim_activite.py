@@ -1,7 +1,7 @@
 import requests
 from sqlalchemy.orm import sessionmaker
 
-from connexion import engine
+from connexion import connexion
 from models_dimensions import TypeExercice, TypeSecteur
 
 
@@ -65,6 +65,7 @@ def ajouter_secteurs_conventionnels(session):
 
 
 if __name__ == "__main__":
+    engine = connexion()
     Session = sessionmaker(bind=engine)
     session = Session()
 
