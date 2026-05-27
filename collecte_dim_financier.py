@@ -6,7 +6,7 @@ from models_dimensions import TypeHonoraire, TypePrescription
 engine = connexion()
 
 if engine:
-    session = sessionmaker(bind=engine)()
+    session = sessionmaker(bind=engine)
 
     BASE = "https://data.ameli.fr/api/explore/v2.1/catalog/datasets"
 
