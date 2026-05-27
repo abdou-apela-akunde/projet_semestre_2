@@ -1,4 +1,5 @@
 from connexion import connexion
+from sqlalchemy import text
 
 engine = connexion()
 
