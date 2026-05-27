@@ -1,13 +1,8 @@
-from sqlalchemy import create_engine 
-from sqlalchemy.orm import sessionmaker 
-from dotenv import load_dotenv 
-import os, requests 
-from models_dimensions import Region, Departement, ProfessionSante, TrancheAge, Sexe 
- 
-load_dotenv() 
-url  = f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}" 
-url += f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}" 
-engine = create_engine(url) 
+import requests
+from connexion import engine
+from sqlalchemy.orm import sessionmaker
+from models_dimensions import Region, Departement, ProfessionSante, TrancheAge, Sexe
+
 session = sessionmaker(bind=engine)() 
  
 BASE = "https://data.ameli.fr/api/explore/v2.1/catalog/datasets" 
