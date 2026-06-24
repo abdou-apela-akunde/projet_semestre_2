@@ -1,0 +1,9 @@
+.env
+.git/
+venv/
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+data/sae201_local.db

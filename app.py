@@ -1,0 +1,37 @@
+"""Point d'entree de l'application Flask."""
+
+from flask import Flask, render_template
+from config import Config
+from controllers.accueil import bp_accueil
+from controllers.api import bp_api
+from controllers.dashboard import bp_dashboard
+from models.db import init_database
+
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
+init_database()
+
+app.register_blueprint(bp_accueil)
+app.register_blueprint(bp_api)
+app.register_blueprint(bp_dashboard)
+
+
+@app.errorhandler(404)
+def page_non_trouvee(_erreur):
+    """Affiche une page claire pour une URL inconnue."""
+    return render_template("erreur.html", message="Page non trouvée."), 404
+
+
+@app.errorhandler(500)
+def erreur_serveur(_erreur):
+    """Affiche une page claire lors d'une erreur serveur."""
+    return render_template(
+        "erreur.html",
+        message="Erreur interne. Réessayez plus tard.",
+    ), 500
+
+
+if __name__ == "__main__":
+    app.run(debug=Config.DEBUG)
