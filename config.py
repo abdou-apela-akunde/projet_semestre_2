@@ -35,7 +35,6 @@ class Config:
     @classmethod
     def db_url(cls):
         """Construit l'URL SQLAlchemy pour MySQL ou SQLite local."""
-        """Construit l'URL SQLAlchemy, avec SQLite local si MySQL n'est pas configuré."""
         if cls.DB_USER and cls.DB_PASSWORD and cls.DB_HOST and cls.DB_NAME:
             return (
                 f"mysql+pymysql://{cls.DB_USER}:{cls.DB_PASSWORD}"

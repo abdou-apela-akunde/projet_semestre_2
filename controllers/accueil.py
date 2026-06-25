@@ -31,7 +31,6 @@ def _preparer_regions(regions):
 @bp_accueil.route("/")
 def index():
     """Affiche le formulaire, la carte et ses donnees de reference."""
-    """Page d'accueil : formulaire de sélection alimenté par la base."""
     session = Session()
     try:
         regions = _preparer_regions(session.query(Region).order_by(Region.libelle).all())

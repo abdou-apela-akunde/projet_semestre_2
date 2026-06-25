@@ -797,5 +797,4 @@ footer {
   .footer-logo { width: 156px; }
   .footer-links { align-items: center; gap: 8px; }
   .footer-copyright { margin-top: 14px; text-align: center; }
-  .sector-item { grid-template-columns: 1fr; gap: 6px; }
 }
