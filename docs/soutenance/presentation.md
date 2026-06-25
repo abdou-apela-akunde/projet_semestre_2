@@ -1,98 +1,296 @@
-# Présentation orale - DataSanté
+# Script de soutenance - DataSante
 
-Durée visée : environ 10 minutes.  
-La démonstration du site est placée à la fin.
+Projet : SAE 2.01 - Developpement d'une application web  
+Sujet : DataSante, exploration et comparaison de donnees de sante francaises  
+Duree totale visee : 15 minutes  
+Repartition : 10 minutes de presentation + 5 minutes de demonstration  
+Groupe :
 
-## Personne 1 : introduction et contexte
+- ALLOUNE Abdelwadoud
+- APELA AKUNDE Abdou
+- BERRICHE Djibril
+- WASEL Yassine
 
-Bonjour, nous allons vous présenter DataSanté, notre projet de SAE 2.01.
+## Objectif du document
 
-DataSanté est une application web développée avec Flask. Son objectif est de rendre plus lisibles des données de santé en France, en particulier les effectifs de professionnels de santé, les densités, les honoraires, les prescriptions et certaines données liées aux pathologies.
+Ce document sert de support oral pour la soutenance. Il est construit pour suivre le diaporama DataSante : page de garde, contexte, objectifs, architecture, donnees, interface, fonctionnalites, bilan, puis demonstration.
 
-Le projet s'appuie sur deux sources principales. La première est la base de données construite en SAE 2.04, qui contient les dimensions de référence : régions, départements, professions de santé, tranches d'âge, sexes, types d'honoraires et postes de prescription. La deuxième source est l'API publique Data Ameli, qui fournit les valeurs chiffrées utilisées dans les tableaux et les graphiques.
+La partie orale doit durer environ 10 minutes. La demonstration doit ensuite durer environ 5 minutes. Le texte ci-dessous peut etre appris tel quel ou utilise comme base pour une presentation plus naturelle.
 
-Nous avons organisé le projet selon une architecture MVC adaptée à Flask. Les modèles sont dans le dossier `models`, les routes dans `controllers`, les services dans `services`, les pages HTML dans `templates`, et les fichiers CSS, JavaScript et GeoJSON dans `static`.
+## Repartition globale
 
-Cette organisation correspond au tutoriel 1 : l'application Flask est structurée, les blueprints séparent les routes, SQLAlchemy gère la connexion à la base, et la page d'accueil est alimentée par les données de référence.
+| Partie | Intervenant | Duree |
+| --- | --- | --- |
+| Introduction, contexte et objectifs | ALLOUNE Abdelwadoud | 2 min 30 |
+| Architecture, base et API | APELA AKUNDE Abdou | 2 min 30 |
+| Interface, pages et visualisations | BERRICHE Djibril | 2 min 30 |
+| Conformite, bilan et transition demo | WASEL Yassine | 2 min 30 |
+| Demonstration de l'application | Groupe complet | 5 min |
 
-Notre objectif n'était pas seulement d'afficher des données brutes, mais de permettre à un utilisateur de faire une recherche, de comprendre les résultats rapidement, puis de les comparer ou de les exporter.
+---
 
-## Personne 2 : données, API et pipeline
+# Partie 1 - Introduction, contexte et objectifs
 
-Je vais maintenant expliquer la partie données.
+Intervenant : ALLOUNE Abdelwadoud  
+Duree visee : 2 min 30  
+Diapositives concernees : page de garde, contexte, objectifs
 
-Au démarrage, l'application lit la configuration dans le fichier `.env`. Si les identifiants MySQL sont présents, elle se connecte à la base SAE 2.04 sur Alwaysdata. Sinon, elle utilise une base SQLite locale créée à partir du fichier `data/sae204_ideal.sql`. Cela permet de lancer le projet même sans accès immédiat à la base distante.
+Bonjour, nous allons vous presenter notre projet de SAE 2.01 : DataSante.
 
-Les tables de dimensions servent à remplir les menus de sélection. Par exemple, les régions et les départements viennent de la base, tout comme les professions de santé et les postes de prescription. Cela évite d'écrire ces listes en dur dans les templates.
+DataSante est une application web developpee avec Flask. Son objectif est de rendre plus lisibles et plus exploitables des donnees publiques de sante en France. L'application permet principalement de consulter les effectifs de professionnels de sante, leur densite par territoire, mais aussi d'explorer des donnees d'honoraires, de prescriptions et de pathologies.
 
-Les données chiffrées ne sont pas stockées localement. Elles sont récupérées à la demande depuis Data Ameli grâce au service `AmeliAPI`. Ce service centralise les appels HTTP, construit les filtres de recherche, nettoie les valeurs reçues et renvoie des listes de résultats exploitables par les routes Flask.
+Le projet s'inscrit dans la continuite de la SAE 2.04. Dans cette SAE precedente, nous avions travaille sur une base de donnees contenant des tables de dimensions : les regions, les departements, les professions de sante, les sexes, les tranches d'age, les types d'honoraires, les prescriptions et les secteurs. Dans la SAE 2.01, nous reutilisons cette base pour construire une vraie application web.
 
-Pour limiter les appels répétés, nous avons ajouté un cache mémoire. Si une même recherche est relancée rapidement, l'application peut réutiliser la réponse déjà obtenue au lieu d'interroger à nouveau l'API.
+L'enjeu n'est donc pas seulement d'afficher des donnees. Il faut proposer une interface claire, organiser le projet proprement, suivre une architecture MVC, interroger une API externe et presenter les resultats sous plusieurs formes : KPI, tableaux, graphiques et carte interactive.
 
-Le pipeline est donc le suivant : l'utilisateur choisit ses filtres, JavaScript envoie une requête à une route `/api`, Flask vérifie les paramètres, interroge Data Ameli, prépare les données, puis renvoie du JSON. Le navigateur met ensuite à jour les KPI, les tableaux et les graphiques.
+Notre application repond a trois grands objectifs.
 
-Cette partie répond au tutoriel 2 : formulaire dynamique, cascade région vers département, appel API, affichage d'un tableau et d'un graphique.
+Premier objectif : permettre a l'utilisateur de filtrer facilement les donnees. Il peut choisir une profession, une region, un departement et une annee ou une periode.
 
-## Personne 3 : pages et fonctionnalités
+Deuxieme objectif : afficher les resultats de maniere visuelle. Au lieu de montrer uniquement un tableau brut, l'application propose des indicateurs cles, des graphiques Chart.js et une carte interactive de la France.
 
-Je vais présenter les principales pages de l'application.
+Troisieme objectif : garder un projet maintenable. Les fichiers sont ranges par role : les routes Flask dans les controleurs, les modeles SQLAlchemy dans les modeles, la logique API dans les services, les vues dans les templates et les fichiers CSS ou JavaScript dans static.
 
-La page d'accueil regroupe les critères de recherche directement sur la première page. On peut choisir une profession, une région entière ou un département, puis une année. La carte interactive permet aussi de sélectionner un territoire. Les vues sous la carte s'actualisent avec les filtres : effectif, densité, variation annuelle, variation en pourcentage, moyenne, graphique d'évolution et tableaux.
+Le nom DataSante resume donc l'idee du projet : transformer des donnees de sante parfois difficiles a lire en une interface plus simple, plus interactive et plus utile pour comparer les territoires.
 
-La page Indicateurs présente une synthèse du projet : nombre de régions, départements, professions, postes de prescription et période exploitable. Elle sert de vue générale sur les référentiels disponibles.
+Transition :
 
-La page Comparaisons permet de comparer deux séries. Chaque série peut avoir sa profession, sa région, son département et sa période. La page affiche un histogramme du dernier point disponible, une courbe d'évolution, une répartition par sexe, une répartition par âge, ainsi qu'un tableau année par année.
+Je vais maintenant laisser la parole a Abdou, qui va presenter l'organisation technique du projet, la base de donnees et le fonctionnement avec l'API Data Ameli.
 
-Les pages Prescriptions et Honoraires fonctionnent sur le même principe. L'utilisateur choisit une profession, un type de donnée, un territoire et une période. L'application affiche ensuite le montant total, le montant moyen, une évolution annuelle et un tableau exportable.
+---
 
-La page Pathologies remplace l'ancienne page Secteurs. Elle permet de choisir une pathologie, un territoire et une période. Elle affiche le nombre de personnes concernées, la prévalence, un graphique et un tableau.
+# Partie 2 - Architecture, base de donnees et API
 
-Tous les tableaux peuvent être triés par colonne et téléchargés en CSV. Cela rend l'application plus utile pour analyser les résultats en dehors du site.
+Intervenant : APELA AKUNDE Abdou  
+Duree visee : 2 min 30  
+Diapositives concernees : stack technique, architecture MVC, pipeline de donnees
 
-## Personne 4 : conformité, déploiement et bilan
+Je vais presenter la partie technique de l'application.
 
-Je vais terminer la partie technique avant la démonstration.
+Le projet est construit avec Flask, qui est un framework web Python. Nous avons utilise Jinja2 pour les templates HTML, SQLAlchemy pour la connexion aux donnees de reference, JavaScript pour les interactions cote navigateur, Chart.js pour les graphiques et Leaflet pour la carte interactive.
 
-Pour le tutoriel 3, le projet contient un fichier `requirements.txt` avec les dépendances nécessaires, ainsi qu'un fichier `wsgi.py` qui expose la variable `application`, attendue par Alwaysdata.
+L'application suit une architecture MVC adaptee a Flask.
 
-Les informations sensibles ne sont pas écrites dans le code. Le fichier `.env` existe seulement en local et il est ignoré par Git, car il contient les vrais identifiants de la base. Les URLs internes sont générées avec `url_for`, ce qui permet au site de fonctionner même s'il est déployé dans un sous-dossier comme `/sae201_b6/`.
+La partie modele se trouve dans le dossier `models`. Elle contient la configuration de la base et les classes qui representent les tables de dimensions. Ces tables viennent de la SAE 2.04 et permettent de remplir les listes de selection : regions, departements, professions, types de prescriptions, types d'honoraires, etc.
 
-Nous avons aussi prévu des pages d'erreur claires pour les erreurs 404 et 500. Si l'API Data Ameli ne renvoie pas de données, l'interface affiche un message au lieu de bloquer complètement la navigation.
+La partie controleur se trouve dans le dossier `controllers`. Elle contient les routes Flask. Certaines routes affichent des pages HTML, par exemple l'accueil, les indicateurs, les comparaisons, les honoraires ou les pathologies. D'autres routes renvoient du JSON pour le JavaScript, notamment les departements d'une region ou les resultats d'une recherche.
 
-Le projet a quelques limites. Il dépend de la disponibilité de Data Ameli, et certaines combinaisons de filtres ne donnent pas de résultat parce que les données n'existent pas dans l'API. En revanche, la structure permet d'ajouter facilement d'autres pages ou d'autres jeux de données.
+La partie vue se trouve dans le dossier `templates`. Les pages utilisent l'heritage Jinja2 avec un fichier principal `base.html`. Cela permet de garder une navbar, un footer et une structure commune sur tout le site.
 
-En résumé, DataSanté respecte les trois tutoriels : structure Flask et base de données pour le tutoriel 1, formulaires et API pour le tutoriel 2, préparation au déploiement pour le tutoriel 3. Nous avons ajouté des améliorations utiles : carte interactive, comparaisons, export CSV, page pathologies et vues plus détaillées.
+Nous avons aussi un dossier `services`, qui contient la logique metier. Par exemple, `ameli_api.py` centralise les appels vers l'API Data Ameli. Cela evite de mettre les requetes directement dans les routes Flask.
 
-## Démonstration du site
+Concernant les donnees, l'application utilise deux sources.
 
-Nous passons maintenant à la démonstration.
+La premiere source est la base de donnees de la SAE 2.04. Elle sert surtout de referentiel. Cela signifie qu'elle donne les noms, les codes et les relations entre les elements, par exemple une region et ses departements.
 
-Personne 1 :
+La deuxieme source est l'API publique Data Ameli. C'est elle qui fournit les donnees chiffrees : effectifs, densites, honoraires, prescriptions ou pathologies selon les pages.
 
-Je lance l'application avec la commande `python app.py`, puis j'ouvre l'adresse locale `http://127.0.0.1:5000`.
+Le fonctionnement est le suivant : l'utilisateur choisit ses filtres dans l'interface. Le navigateur envoie une requete a Flask. Flask verifie les parametres, construit une requete vers Data Ameli, recupere les donnees, les nettoie, puis renvoie une reponse JSON. Ensuite, JavaScript met a jour les cartes de KPI, les graphiques et les tableaux sans obliger l'utilisateur a changer de page.
 
-Sur la page d'accueil, je sélectionne une profession de santé, par exemple les médecins, puis une région. Je peux choisir toute la région ou préciser un département. La carte se synchronise avec les filtres : si je clique sur un département, le formulaire se met à jour automatiquement.
+Nous avons aussi ajoute un cache memoire. Si une meme recherche est relancee rapidement, l'application peut reutiliser la reponse deja obtenue. Cela limite les appels repetes a l'API et rend l'utilisation plus fluide.
 
-Je montre ensuite les vues sous la carte : effectif, densité, variation annuelle, variation en pourcentage, effectif moyen, graphique d'évolution et historique complet. Les années affichées sont limitées à la période disponible, de 2015 à 2023.
+Enfin, le projet est prepare pour le deploiement. Le fichier `requirements.txt` liste les dependances, `wsgi.py` expose l'application pour Alwaysdata et les informations sensibles sont mises dans un fichier `.env`, qui n'est pas versionne sur GitHub.
 
-Personne 2 :
+Transition :
 
-Je vais maintenant sur la page Indicateurs. Cette page résume les données disponibles : nombre de territoires, professions, postes de prescription, types d'honoraires et période analysable.
+Nous avons donc une base technique organisee. Djibril va maintenant presenter ce que l'utilisateur voit concretement dans l'application : les pages, les graphiques et les fonctionnalites principales.
 
-Ensuite, j'ouvre la page Comparaisons. Je configure deux séries, par exemple une même profession dans deux régions différentes. Je lance la comparaison. On obtient un histogramme, une courbe d'évolution, une répartition par sexe, une répartition par âge, et un tableau année par année.
+---
 
-Personne 3 :
+# Partie 3 - Interface, pages et visualisations
 
-Je présente maintenant la page Prescriptions. Je choisis une profession, un poste de prescription, une région ou un département, puis une plage d'années. Après validation, l'application affiche le montant prescrit total, le montant moyen, un graphique d'évolution et un tableau.
+Intervenant : BERRICHE Djibril  
+Duree visee : 2 min 30  
+Diapositives concernees : interface, accueil, carte, pages d'analyse, comparaisons
 
-Je montre aussi que le tableau est triable : on peut cliquer sur une colonne pour inverser l'ordre. On peut également télécharger les résultats en CSV.
+Je vais maintenant presenter l'interface et les principales fonctionnalites visibles par l'utilisateur.
 
-Personne 4 :
+La page d'accueil est la page centrale de l'application. Elle contient les filtres principaux : profession, region, departement et annee. Elle contient aussi une carte interactive de la France. Cette carte permet de selectionner une region ou un departement directement en cliquant dessus.
 
-Je continue avec la page Honoraires. Le fonctionnement est similaire : je choisis une profession, un type d'honoraire, un territoire et une période. Les résultats affichent les montants totaux et moyens avec un graphique clair.
+Un point important est que la carte et les filtres sont synchronises. Si l'utilisateur choisit une region ou un departement dans le formulaire, la carte se met a jour. Et inversement, si l'utilisateur clique sur la carte, les filtres se remplissent automatiquement. Cela rend la recherche plus intuitive.
 
-Enfin, je vais sur la page Pathologies. Je sélectionne une pathologie, une région ou un département, puis une période. L'application affiche le nombre de personnes concernées, la prévalence, l'évolution annuelle et le tableau correspondant.
+Sur la meme page, nous avons ajoute une zone de resultats. Quand aucun filtre n'est selectionne, l'interface affiche des messages de previsualisation, par exemple "Selectionnez une profession", "Selectionnez une region ou un departement" ou "Selectionnez une annee". L'utilisateur comprend donc immediatement quelles informations seront affichees apres une recherche.
 
-Il n'y a pas de page admin, d'inscription ou de connexion dans notre application, car les consignes et le besoin du projet portent sur la consultation de données publiques. Nous terminons donc la démonstration avec la page À propos, qui rappelle le contexte, les membres du groupe, les technologies et les sources de données.
+Quand les filtres sont remplis, cette zone se met a jour directement sur l'accueil. Elle affiche les KPI principaux, comme l'effectif, la densite, la variation annuelle ou la moyenne sur la periode. Elle affiche aussi un graphique d'evolution et un tableau de donnees.
+
+L'application contient ensuite plusieurs pages specialisees.
+
+La page Indicateurs donne une vue generale du projet. Elle presente des chiffres utiles sur les donnees disponibles : nombre de regions, nombre de departements, nombre de professions, periode exploitable et autres elements de reference.
+
+La page Comparaisons permet de comparer deux ensembles de donnees. L'utilisateur peut choisir des criteres differents pour chaque serie : annee, profession, region, departement et periode. La page affiche ensuite des graphiques complementaires : un graphique pour comparer les valeurs et un autre pour observer l'evolution dans le temps. L'objectif est d'eviter les doublons et de montrer des informations vraiment differentes.
+
+La page Prescriptions permet d'analyser les montants prescrits selon une profession, un poste de prescription, un territoire et une periode. La page Honoraires fonctionne de maniere proche, mais avec les types d'honoraires. La page Pathologies permet d'observer le nombre de personnes concernees et la prevalence d'une pathologie sur un territoire.
+
+Pour toutes ces pages, nous avons cherche a garder une presentation coherente avec la maquette : une interface claire, des blocs bien organises, des graphiques lisibles et des informations importantes mises en avant.
+
+Nous avons aussi ajoute des tableaux triables et des exports CSV. Cela permet a l'utilisateur de recuperer les resultats pour les retravailler dans un tableur si besoin.
+
+Transition :
+
+Je vais maintenant passer la parole a Yassine, qui va conclure sur la conformite avec les consignes, les limites du projet et la preparation de la demonstration.
+
+---
+
+# Partie 4 - Conformite, bilan et transition vers la demonstration
+
+Intervenant : WASEL Yassine  
+Duree visee : 2 min 30  
+Diapositives concernees : conformite, bilan, demonstration
+
+Je vais terminer la presentation en expliquant comment le projet respecte les consignes et ce que nous avons retenu.
+
+Le premier tutoriel demandait de construire une application Flask avec une organisation claire de type MVC. Dans notre projet, cette structure est bien presente : `models` pour les donnees, `controllers` pour les routes, `templates` pour les vues et `static` pour les fichiers CSS, JavaScript, images et GeoJSON. Les routes sont separees avec des blueprints, ce qui rend le projet plus facile a maintenir.
+
+Le deuxieme tutoriel portait sur les formulaires, l'API et les visualisations. Notre application propose des formulaires dynamiques avec une cascade entre region et departement. Elle interroge l'API Data Ameli avec des routes JSON. Elle affiche les resultats sous forme de tableaux et de graphiques Chart.js. Nous avons aussi ajoute une carte Leaflet, des KPI, des comparaisons et des exports CSV.
+
+Le troisieme tutoriel concernait le deploiement, qui etait presente comme optionnel. Le projet est prepare pour cela avec `requirements.txt`, `wsgi.py`, l'utilisation de variables d'environnement et des chemins generes proprement avec `url_for`. Cela permet de l'adapter a un hebergement comme Alwaysdata.
+
+Nous avons egalement supprime ce qui n'etait pas utile pour le besoin final, comme une page admin. L'application se concentre sur la consultation et l'analyse de donnees publiques. Il n'y a donc pas de connexion obligatoire, car ce n'est pas necessaire pour l'objectif du projet.
+
+Les principales limites viennent des donnees elles-memes. Certaines combinaisons de filtres ne renvoient pas de resultat, car l'API Data Ameli ne contient pas toujours toutes les valeurs pour toutes les professions, tous les territoires ou toutes les annees. L'application gere ce cas en affichant des messages plutot qu'en bloquant.
+
+En bilan, ce projet nous a permis de travailler sur plusieurs competences : structurer une application web, reutiliser une base de donnees, consommer une API externe, creer des interfaces dynamiques, visualiser des donnees et preparer un projet pour GitHub et pour un deploiement.
+
+Nous allons maintenant passer a la demonstration. L'objectif de la demo est de montrer un parcours utilisateur complet : partir de l'accueil, appliquer des filtres, utiliser la carte, consulter les KPI, comparer deux territoires, puis montrer les pages d'analyse complementaires.
+
+---
+
+# Demonstration de l'application
+
+Duree visee : 5 minutes  
+Objectif : montrer rapidement que l'application est fonctionnelle, interactive et conforme au diaporama.
+
+## Preparation avant la demo
+
+Avant le passage, verifier que le serveur Flask est lance :
+
+```powershell
+python app.py
+```
+
+Ouvrir ensuite :
+
+```text
+http://127.0.0.1:5000
+```
+
+Preparer une recherche simple qui renvoie des donnees, par exemple une profession courante, une region connue et une annee disponible entre 2015 et 2023.
+
+## Demo - minute 0 a 1 : accueil, filtres et carte
+
+Intervenant conseille : ALLOUNE Abdelwadoud
+
+Nous sommes sur la page d'accueil de DataSante. On retrouve directement les filtres principaux en haut de page : profession, region, departement et annee.
+
+Je commence par selectionner une profession. Ensuite, je choisis une region dans le formulaire. On voit que la carte se met a jour et que le territoire selectionne est mis en evidence.
+
+Je peux aussi faire l'inverse : cliquer directement sur une region ou un departement dans la carte. Dans ce cas, les filtres se remplissent automatiquement. Cela montre que la carte et le formulaire sont synchronises dans les deux sens.
+
+Point a montrer :
+
+- selection d'une region depuis le filtre ;
+- selection d'un departement depuis la carte ;
+- zoom ou deplacement sur la carte si necessaire ;
+- panneau de donnees de la region ou du departement selectionne.
+
+## Demo - minute 1 a 2 : resultats dynamiques sur l'accueil
+
+Intervenant conseille : APELA AKUNDE Abdou
+
+Quand les filtres sont appliques, l'utilisateur reste sur la page d'accueil. L'application ne redirige pas vers une autre page. Les resultats apparaissent directement dans la zone de previsualisation.
+
+On voit les KPI principaux, par exemple l'effectif, la densite ou l'evolution. Le graphique permet de visualiser la tendance sur la periode disponible. Le tableau donne le detail des valeurs par annee.
+
+Si aucun filtre n'est choisi, la page affiche des cartes vides avec des messages d'aide. Cela permet de comprendre ce qui sera affiche apres la recherche.
+
+Point a montrer :
+
+- les KPI principaux ;
+- le graphique d'evolution ;
+- le tableau de resultats ;
+- le comportement sans filtre si besoin.
+
+## Demo - minute 2 a 3 : page Comparaisons
+
+Intervenant conseille : BERRICHE Djibril
+
+Je passe maintenant a la page Comparaisons. Cette page permet de comparer deux series de donnees.
+
+Pour chaque serie, on peut choisir une profession, une region ou un departement et une periode. L'interet est de comparer deux territoires ou deux professions avec des criteres differents.
+
+Une fois la comparaison lancee, les graphiques du bas donnent deux lectures complementaires. L'un sert a comparer les valeurs, l'autre montre l'evolution dans le temps. Le tableau permet ensuite de lire les donnees plus precisement.
+
+Point a montrer :
+
+- choix de deux territoires ou deux professions ;
+- lancement de la comparaison ;
+- lecture rapide des deux graphiques ;
+- tableau comparatif.
+
+## Demo - minute 3 a 4 : pages d'analyse
+
+Intervenant conseille : WASEL Yassine
+
+Je montre maintenant les pages d'analyse complementaires.
+
+La page Prescriptions permet d'analyser les montants prescrits selon une profession, un poste de prescription, un territoire et une periode.
+
+La page Honoraires permet d'observer les honoraires ou les depassements selon les criteres disponibles.
+
+La page Pathologies donne une autre approche : on ne regarde plus une profession, mais une pathologie, avec le nombre de personnes concernees et la prevalence.
+
+Ces pages gardent la meme logique d'interface : filtres, indicateurs, graphiques et tableau.
+
+Point a montrer :
+
+- ouvrir rapidement Prescriptions ;
+- ouvrir Honoraires ;
+- ouvrir Pathologies ;
+- insister sur la coherence de l'interface.
+
+## Demo - minute 4 a 5 : export, a propos et conclusion
+
+Intervenant conseille : groupe complet, conclusion par WASEL Yassine
+
+Pour finir, nous montrons que les tableaux peuvent etre tries par colonne et exportes en CSV. C'est utile si l'utilisateur veut continuer l'analyse dans un tableur.
+
+Nous ouvrons ensuite la page A propos. Elle rappelle le nom de la SAE, les membres du groupe, les technologies utilisees, les sources de donnees et l'architecture du projet.
+
+Conclusion orale :
+
+Pour conclure, DataSante est une application Flask complete qui respecte les consignes de la SAE 2.01. Elle reutilise la base de donnees de la SAE 2.04, interroge l'API Data Ameli, affiche des formulaires dynamiques, des graphiques, des tableaux, une carte interactive et des comparaisons. L'objectif etait de rendre les donnees de sante plus lisibles et plus faciles a explorer.
 
 Merci pour votre attention.
+
+---
+
+# Conseils pour tenir les 15 minutes
+
+- Ne pas lire trop vite : viser une parole claire et posee.
+- La presentation orale doit durer environ 10 minutes, soit environ 2 min 30 par personne.
+- La demo doit rester simple : ne pas multiplier les recherches.
+- Si l'API est lente, commenter ce qui est en train de se passer : l'application interroge Data Ameli et met a jour les resultats.
+- Prevoir une combinaison de filtres qui fonctionne avant la soutenance.
+- Eviter de passer trop de temps sur les details techniques pendant la demo : ils ont deja ete presentes dans les 10 premieres minutes.
+
+# Questions possibles du jury
+
+## Pourquoi utiliser une API au lieu de stocker toutes les donnees ?
+
+Parce que les donnees chiffrees viennent de Data Ameli et peuvent etre consultees a la demande. Cela evite de dupliquer de gros jeux de donnees et garde l'application plus proche des donnees publiques disponibles.
+
+## A quoi sert la base SAE 2.04 ?
+
+Elle sert de referentiel. Elle fournit les listes propres de regions, departements, professions et autres dimensions utilisees dans les formulaires.
+
+## Pourquoi avoir supprime la page admin ?
+
+Le projet porte sur la consultation de donnees publiques. Une page admin, une connexion ou une inscription n'etaient pas necessaires pour repondre au besoin principal.
+
+## Que se passe-t-il si l'API ne renvoie pas de donnees ?
+
+L'application affiche un message indiquant qu'aucune donnee n'est disponible pour les filtres choisis. Cela evite une erreur bloquante pour l'utilisateur.
+
+## Quelles ameliorations seraient possibles ?
+
+On pourrait ajouter un deploiement final verifie sur Alwaysdata, enrichir les tests automatises, ajouter d'autres jeux de donnees Data Ameli et proposer davantage d'exports.
