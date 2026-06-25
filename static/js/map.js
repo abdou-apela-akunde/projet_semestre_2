@@ -204,7 +204,7 @@ function syncMapFromRegionFilter() {
   clearDepartmentHighlight();
   if (!code) {
     clearRegionHighlight();
-    setInfoText("Aucune sélection", "Sélectionnez une région ou un département pour synchroniser les filtres.", "-");
+    setInfoText("Aucune sélection", "Le territoire choisi synchronise automatiquement les filtres.", "-");
     return;
   }
 

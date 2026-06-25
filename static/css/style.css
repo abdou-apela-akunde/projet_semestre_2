@@ -373,6 +373,20 @@ select,
   font: 800 30px Montserrat, sans-serif;
 }
 
+.mini-kpi small,
+.view-description {
+  display: block;
+  margin-top: 8px;
+  color: #6781a8;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.view-description {
+  margin: 0 0 10px;
+}
+
 .preview-summary {
   padding: 14px 16px;
   border: 1px solid #dce5ee;

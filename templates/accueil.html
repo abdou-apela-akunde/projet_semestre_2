@@ -65,7 +65,7 @@
         <div>
           <span>Territoire sélectionné</span>
           <strong>Aucune sélection</strong>
-          <small>Sélectionnez une région ou un département pour synchroniser les filtres.</small>
+          <small>Le territoire choisi synchronise automatiquement les filtres.</small>
         </div>
         <div class="map-detail-kpis">
           <div><span>Régions</span><strong>{{ regions|length }}</strong></div>
@@ -77,34 +77,33 @@
     </section>
 
     <section class="home-results" id="home-results">
-      <div class="card-heading"><h2>Vues de la sélection</h2><span>Actualisées</span></div>
-      <div class="preview-requirements" id="preview-requirements">
-        <div id="need-profession">Sélectionnez une profession</div>
-        <div id="need-territory">Sélectionnez une région ou un département</div>
-        <div id="need-year">Sélectionnez une année</div>
-      </div>
+      <div class="card-heading"><h2>Résultats de la recherche</h2><span>Vue d'ensemble</span></div>
       <div class="preview-kpis">
-        <article class="mini-kpi"><span>Effectif retenu</span><strong id="preview-effectif">-</strong></article>
-        <article class="mini-kpi"><span>Densité retenue</span><strong id="preview-densite">-</strong></article>
-        <article class="mini-kpi"><span>Territoire</span><strong id="preview-territory">-</strong></article>
-        <article class="mini-kpi"><span>Variation annuelle</span><strong id="preview-variation">-</strong></article>
-        <article class="mini-kpi"><span>Variation en %</span><strong id="preview-variation-pct">-</strong></article>
-        <article class="mini-kpi"><span>Effectif moyen</span><strong id="preview-average">-</strong></article>
+        <article class="mini-kpi"><span>Effectif retenu</span><strong id="preview-effectif">-</strong><small>Nombre de professionnels pour l'année choisie.</small></article>
+        <article class="mini-kpi"><span>Densité retenue</span><strong id="preview-densite">-</strong><small>Rapport entre les professionnels et la population.</small></article>
+        <article class="mini-kpi"><span>Territoire</span><strong id="preview-territory">-</strong><small>Zone actuellement analysée.</small></article>
+        <article class="mini-kpi"><span>Variation annuelle</span><strong id="preview-variation">-</strong><small>Écart avec l'année précédente.</small></article>
+        <article class="mini-kpi"><span>Variation en %</span><strong id="preview-variation-pct">-</strong><small>Progression ou baisse en pourcentage.</small></article>
+        <article class="mini-kpi"><span>Effectif moyen</span><strong id="preview-average">-</strong><small>Moyenne calculée sur la période disponible.</small></article>
       </div>
       <div class="preview-summary" id="preview-summary">Les indicateurs apparaîtront ici dès que les filtres seront complétés.</div>
       <div class="chart-title">Évolution des effectifs et de la densité</div>
+      <p class="view-description">Ce graphique montre si le nombre de professionnels augmente ou diminue dans le temps.</p>
       <div class="chart-panel preview-chart"><canvas id="previewChart"></canvas></div>
       <section class="dashboard-grid two-columns detail-panels">
         <article class="card table-card">
           <div class="card-heading"><h2>Résultat sélectionné</h2><span id="selection-points">Année</span></div>
+          <p class="view-description">Cette vue résume la valeur exacte pour l'année choisie.</p>
           <div id="selection-table"><p class="empty">Aucune donnée à afficher pour le moment.</p></div>
         </article>
         <article class="card table-card">
           <div class="card-heading"><h2>Repères statistiques</h2><span>Synthèse</span></div>
+          <p class="view-description">Cette vue aide à situer le résultat dans la période analysée.</p>
           <div id="stats-table"><p class="empty">Les repères seront calculés après sélection.</p></div>
         </article>
         <article class="card table-card wide-card">
           <div class="card-heading"><h2>Historique complet</h2><span id="history-points">0 point</span></div>
+          <p class="view-description">Cette vue liste toutes les années disponibles pour suivre l'évolution.</p>
           <div id="history-table"><p class="empty">Aucun historique chargé.</p></div>
         </article>
       </section>

@@ -59,9 +59,9 @@ function enhanceHomeTables() {
 
 // Indique visuellement les filtres deja renseignes.
 function setRequirementState() {
-  needProfession.classList.toggle("complete", Boolean(professionInput.value));
-  needTerritory.classList.toggle("complete", Boolean(regionSelect.value));
-  needYear.classList.toggle("complete", Boolean(yearInput.value));
+  needProfession?.classList.toggle("complete", Boolean(professionInput.value));
+  needTerritory?.classList.toggle("complete", Boolean(regionSelect.value));
+  needYear?.classList.toggle("complete", Boolean(yearInput.value));
 }
 
 function resetPreview(message = "Complétez les filtres pour afficher la prévisualisation.") {
@@ -270,7 +270,7 @@ async function updatePreview() {
   ensureChart();
 
   if (!professionInput.value || !regionSelect.value || !yearInput.value) {
-    resetPreview("Sélectionnez une profession, une région et une année.");
+    resetPreview("Complétez les filtres pour afficher les résultats.");
     return;
   }
 
@@ -326,5 +326,5 @@ if (homeSearchForm) {
     element?.addEventListener("change", () => updatePreview().catch(() => resetPreview("Impossible de charger la prévisualisation.")));
   });
   setRequirementState();
-  resetPreview("Sélectionnez une profession, une région ou un département, puis une année.");
+  resetPreview("Les résultats apparaîtront ici après le choix des filtres.");
 }
