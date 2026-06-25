@@ -53,7 +53,7 @@ S201 - APP/
 |-- config.py                      # Configuration et variables d'environnement
 |-- wsgi.py                        # Entrée WSGI pour Alwaysdata
 |-- requirements.txt               # Dépendances Python
-|-- .env.example                   # Modèle de configuration sans secret
+|-- .env                           # Configuration locale non versionnée
 |
 |-- controllers/                   # Routes HTML et endpoints JSON
 |   |-- accueil.py                 # Accueil, filtres, carte
@@ -90,7 +90,6 @@ Commandes :
 python -m venv venv
 venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-copy .env.example .env
 python app.py
 ```
 
@@ -98,18 +97,22 @@ Ouvrir ensuite [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 ## Configuration
 
-Le fichier `.env` n'est pas versionné. Il doit contenir les valeurs locales ou celles du serveur.
+Le projet doit être lancé avec un fichier `.env` placé à la racine. Ce fichier contient les vrais identifiants de la base SAE 2.04 et ne doit jamais être versionné sur GitHub.
+
+Pour ce projet, le `.env` local doit contenir :
 
 ```env
-DB_USER=
-DB_PASSWORD=
+DB_USER=sae204_b6_user
+DB_PASSWORD=<mot_de_passe_fourni_par_l_enseignant>
 DB_HOST=mysql-sae204.alwaysdata.net
-DB_NAME=
+DB_NAME=sae204_b6_bd
 FLASK_ENV=development
-SECRET_KEY=change-me
+SECRET_KEY=<chaine_longue_et_unique>
 ```
 
-Si les quatre variables MySQL ne sont pas renseignées, l'application utilise automatiquement une base SQLite locale alimentée par `data/sae204_ideal.sql`.
+Le mot de passe réel est volontairement conservé uniquement dans le fichier `.env` local. Il n'est pas affiché dans le README pour respecter les consignes de sécurité du tutoriel : `.env` contient des informations sensibles et doit rester exclu du dépôt.
+
+Au lancement, `config.py` charge automatiquement ce fichier avec `python-dotenv`. Si les quatre variables MySQL ne sont pas renseignées, l'application utilise une base SQLite locale alimentée par `data/sae204_ideal.sql`, ce qui permet de travailler même sans accès immédiat à MySQL.
 
 ## Pages du site
 
@@ -208,7 +211,7 @@ Variables de production à définir côté site Alwaysdata :
 
 ```env
 DB_USER=sae204_b6_user
-DB_PASSWORD=<mot_de_passe_mysql>
+DB_PASSWORD=<mot_de_passe_fourni_par_l_enseignant>
 DB_HOST=mysql-sae204.alwaysdata.net
 DB_NAME=sae204_b6_bd
 FLASK_ENV=production
@@ -241,4 +244,4 @@ https://sae204.alwaysdata.net/sae201_b6/
 | Tutoriel 3 : `requirements.txt` | Conforme | Dépendances listées |
 | Tutoriel 3 : `wsgi.py` | Conforme | Variable `application` exposée |
 | Tutoriel 3 : pas d'URL statique en dur | Conforme | Templates et scripts utilisent `url_for` ou des URLs passées en `data-*` |
-| Tutoriel 3 : secrets non versionnés | Conforme | `.env` ignoré, `.env.example` fourni |
+| Tutoriel 3 : secrets non versionnés | Conforme | `.env` ignoré par Git et valeurs sensibles gardées hors du dépôt |
