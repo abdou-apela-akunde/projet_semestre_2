@@ -55,7 +55,7 @@ Je vais terminer la partie technique avant la démonstration.
 
 Pour le tutoriel 3, le projet contient un fichier `requirements.txt` avec les dépendances nécessaires, ainsi qu'un fichier `wsgi.py` qui expose la variable `application`, attendue par Alwaysdata.
 
-Les informations sensibles ne sont pas écrites dans le code. Le fichier `.env` est ignoré par Git, et un fichier `.env.example` sert de modèle sans mot de passe. Les URLs internes sont générées avec `url_for`, ce qui permet au site de fonctionner même s'il est déployé dans un sous-dossier comme `/sae201_b6/`.
+Les informations sensibles ne sont pas écrites dans le code. Le fichier `.env` existe seulement en local et il est ignoré par Git, car il contient les vrais identifiants de la base. Les URLs internes sont générées avec `url_for`, ce qui permet au site de fonctionner même s'il est déployé dans un sous-dossier comme `/sae201_b6/`.
 
 Nous avons aussi prévu des pages d'erreur claires pour les erreurs 404 et 500. Si l'API Data Ameli ne renvoie pas de données, l'interface affiche un message au lieu de bloquer complètement la navigation.
 
